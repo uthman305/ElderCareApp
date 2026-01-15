@@ -1,0 +1,32 @@
+@using ElderCareApp.Models.ViewModels
+@model EnrollElderViewModel
+
+<h2>Enroll Elder</h2>
+
+<form asp-action="Enroll" method="post">
+
+    <div class="form-group">
+        <label>Select Care Home</label>
+        <select asp-for="Elder.CareHomeId" asp-items="Model.CareHomes" class="form-control">
+            <option value="">-- Select Care Home --</option>
+        </select>
+        <span asp-validation-for="Elder.CareHomeId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mt-2">
+        <label>Full Name</label>
+        <input asp-for="Elder.FullName" class="form-control" />
+        <span asp-validation-for="Elder.FullName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mt-2">
+        <label>Age</label>
+        <input asp-for="Elder.Age" type="number" class="form-control" />
+        <span asp-validation-for="Elder.Age" class="text-danger"></span>
+    </div>
+
+    <button class="btn btn-success mt-3">
+        Enroll Elder
+    </button>
+
+</form>

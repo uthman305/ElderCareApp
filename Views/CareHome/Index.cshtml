@@ -1,0 +1,42 @@
+@model IEnumerable<CareHome>
+
+@{
+    ViewData["Title"] = "Care Homes";
+}
+
+<h2>Registered Care Homes</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Bank</th>
+            <th>Account Number</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var careHome in Model)
+{
+        <tr>
+            <td>@careHome.Name</td>
+            <td>@careHome.Address</td>
+            <td>@careHome.BankName</td>
+            <td><strong>@careHome.AccountNumber</strong></td>
+            <td>
+                <a asp-controller="Elder"
+                   asp-action="Enroll"
+                   asp-route-careHomeId="@careHome.Id"
+                   class="btn btn-primary btn-sm">
+                    Enroll Elder
+                </a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<a asp-action="Register" class="btn btn-success">
+    Register New Care Home
+</a>
