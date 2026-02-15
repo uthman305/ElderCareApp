@@ -5,47 +5,63 @@ using System.Linq;
 using System.Threading.Tasks;
 using ElderCareApp.Dto;
 using ElderCareApp.Implementations.Services;
+using ElderCareApp.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace ElderCareApp.Controllers
 {
-   
-    public class AccountController  : Controller
+
+    public class AccountController : Controller
     {
         private readonly AuthService _authService;
+        private readonly IStaffService _staffService;
 
-    public AccountController(AuthService authService)
-    {
-        _authService = authService;
-    }
-
-    public IActionResult Login() => View();
-
-    [HttpPost]
-    public async Task<IActionResult> Login(ManagerLoginDto dto)
-    {
-        if (!ModelState.IsValid)
-            return View(dto);
-
-        var careHome = await _authService.LoginAsync(dto.Email, dto.Password);
-
-        if (careHome == null)
+        public AccountController(AuthService authService, IStaffService staffService)
         {
-            ModelState.AddModelError("", "Invalid login credentials");
-            return View(dto);
+            _authService = authService;
+            _staffService = staffService;
         }
 
-        HttpContext.Session.SetInt32("CareHomeId", careHome.Id);
-        HttpContext.Session.SetString("ManagerName", careHome.ManagerName);
+
+
+
+       public IActionResult Login()
+{
+    return View(new LoginDto());
+}
+
+[HttpPost]
+public async Task<IActionResult> Login(LoginDto dto)
+{
+    if (!ModelState.IsValid)
+        return View(dto);
+
+    // Try Manager login
+    var manager = await _authService.ManagerLoginAsync(dto.Email, dto.Password);
+    if (manager != null)
+    {
+        HttpContext.Session.SetString("Role", "Manager");
+        HttpContext.Session.SetInt32("CareHomeId", manager.Id);
+        HttpContext.Session.SetString("ManagerName", manager.ManagerName);
 
         return RedirectToAction("Dashboard", "Manager");
     }
 
-    public IActionResult Logout()
+    // Try Staff login
+    var staff = await _authService.StaffLoginAsync(dto.Email, dto.Password);
+    if (staff != null)
     {
-        HttpContext.Session.Clear();
-        return RedirectToAction("Index", "Home");
+        HttpContext.Session.SetString("Role", "Staff");
+        HttpContext.Session.SetInt32("StaffId", staff.Id);
+        HttpContext.Session.SetInt32("CareHomeId", staff.CareHomeId);
+
+        return RedirectToAction("Dashboard", "Staff");
     }
+
+    ModelState.AddModelError("", "Invalid login credentials");
+    return View(dto);
 }
+
+    }
 }

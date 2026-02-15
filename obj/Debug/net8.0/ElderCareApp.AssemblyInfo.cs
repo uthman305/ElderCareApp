@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ElderCareApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3f8c768d30ca10f2e8528904ab70994018aa441f")]
 [assembly: System.Reflection.AssemblyProductAttribute("ElderCareApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ElderCareApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,0 +1,36 @@
+@model IEnumerable<ElderCareApp.Models.ElderHealthRecord>
+
+@{
+    ViewData["Title"] = "Health Records";
+}
+
+<h2>Health Records</h2>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">No health records available.</p>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Blood Pressure</th>
+                <th>Heart Rate</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var record in Model)
+        {
+            <tr>
+                <td>@record.DateRecorded.ToString("dd MMM yyyy HH:mm")</td>
+                <td>@record.BloodPressure</td>
+                <td>@record.HeartRate</td>
+                <td>@record.Notes</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

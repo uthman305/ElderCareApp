@@ -13,6 +13,12 @@ builder.Services.AddScoped<ICareHomeRepository, CareHomeRepository>();
 builder.Services.AddScoped<ICareHomeService, CareHomeService>();
 builder.Services.AddScoped<IElderRepository, ElderRepository>();
 builder.Services.AddScoped<IElderService, ElderService>();
+builder.Services.AddScoped<IStaffRepository, StaffRepository>();
+builder.Services.AddScoped<IHealthRepository, HealthRepository>();
+
+builder.Services.AddScoped<IStaffService, StaffService>();
+builder.Services.AddScoped<IHealthService, HealthService>();
+
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddDistributedMemoryCache();
 

@@ -1,0 +1,27 @@
+@model IEnumerable<ElderCareApp.Models.ElderHealthRecord>
+
+<h2>Health Records</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Blood Pressure</th>
+            <th>Heart Rate</th>
+            <th>Notes</th>
+            <th>Recorded By</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var record in Model)
+    {
+        <tr>
+            <td>@record.BloodPressure</td>
+            <td>@record.HeartRate</td>
+            <td>@record.Notes</td>
+            <td>@record.Staff?.FullName</td>
+            <td>@record.DateRecorded.ToString("dd MMM yyyy")</td>
+        </tr>
+    }
+    </tbody>
+</table>

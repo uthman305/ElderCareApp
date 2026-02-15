@@ -1,0 +1,43 @@
+@model ElderCareApp.Dto.AddHealthDto
+
+@{
+    ViewData["Title"] = "Add Health Record";
+}
+
+<h2>Add Health Record</h2>
+
+<form asp-controller="Staff"
+      asp-action="AddHealth"
+      method="post">
+
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" asp-for="ElderId" />
+
+    <div class="mb-3">
+        <label asp-for="BloodPressure" class="form-label"></label>
+        <input asp-for="BloodPressure" class="form-control" />
+        <span asp-validation-for="BloodPressure" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="HeartRate" class="form-label"></label>
+        <input asp-for="HeartRate" class="form-control" />
+        <span asp-validation-for="HeartRate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Notes" class="form-label"></label>
+        <textarea asp-for="Notes" class="form-control"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-success">
+        Save
+    </button>
+
+    <a asp-action="Dashboard"
+       asp-controller="Staff"
+       class="btn btn-secondary ms-2">
+        Cancel
+    </a>
+</form>

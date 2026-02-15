@@ -12,5 +12,5 @@ namespace ElderCareApp.Interfaces.Repositories
         Task AddAsync(Elder elder);
             Task<Elder?> GetByIdAsync(int id);
         Task RemoveAsync(Elder elder);
-    }
+    } 
 }

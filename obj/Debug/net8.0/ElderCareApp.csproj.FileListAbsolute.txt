@@ -62,3 +62,4 @@ C:\Users\USER\Desktop\ElderCareApp\obj\Debug\net8.0\refint\ElderCareApp.dll
 C:\Users\USER\Desktop\ElderCareApp\obj\Debug\net8.0\ElderCareApp.pdb
 C:\Users\USER\Desktop\ElderCareApp\obj\Debug\net8.0\ElderCareApp.genruntimeconfig.cache
 C:\Users\USER\Desktop\ElderCareApp\obj\Debug\net8.0\ref\ElderCareApp.dll
+C:\Users\USER\Desktop\ElderCareApp\obj\Debug\net8.0\ElderCareApp.sourcelink.json

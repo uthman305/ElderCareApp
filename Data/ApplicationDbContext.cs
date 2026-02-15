@@ -17,7 +17,8 @@ namespace ElderCareApp.Data
         public DbSet<CareHome> CareHomes { get; set; } 
         public DbSet<Elder> Elders { get; set; }  
 
-        
+        public DbSet<Staff> Staffs { get; set; }
+public DbSet<ElderHealthRecord> ElderHealthRecords { get; set; }
     }
 
     

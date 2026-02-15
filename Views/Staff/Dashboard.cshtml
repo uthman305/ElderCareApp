@@ -1,0 +1,59 @@
+@model IEnumerable<ElderCareApp.Models.Elder>
+
+@{
+    ViewData["Title"] = "Staff Dashboard";
+}
+
+<h2>Staff Dashboard</h2>
+
+<p>Welcome, @Context.Session.GetString("UserName")</p>
+
+<hr />
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        No elders found in your care home.
+    </div>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Full Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Health</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var elder in Model)
+            {
+                <tr>
+                    <td>@elder.FullName</td>
+                    <td>@elder.Age</td>
+                    <td>
+                        <a asp-controller="Staff" asp-action="AddHealth" asp-route-elderId="@elder.Id"
+                               class="btn btn-sm btn-primary">
+                            Add Health
+                        </a>
+
+
+                    </td>
+<a asp-action="ViewHealth"
+   asp-route-elderId="@elder.Id"
+   class="btn btn-info btn-sm">
+   View Records
+</a>
+
+                    <td>
+
+                    </td>
+                </tr>
+            
+                
+            }
+        </tbody>
+    </table>
+}
