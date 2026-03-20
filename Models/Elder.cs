@@ -10,7 +10,7 @@ namespace ElderCareApp.Models
         public int Id { get; set; }
     public string FullName { get; set; }
     public int Age { get; set; }
-
+public string Status { get; set; } = "Stable"; // Default status
     public int CareHomeId { get; set; }
     public CareHome CareHome { get; set; }
     }

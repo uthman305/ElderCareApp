@@ -10,7 +10,8 @@ namespace ElderCareApp.Interfaces.Repositories
     {
         Task<IEnumerable<Elder>> GetByCareHomeIdAsync(int careHomeId);
         Task AddAsync(Elder elder);
-            Task<Elder?> GetByIdAsync(int id);
+           
+            Task<IEnumerable<Elder>> GetByIdAsync(int id);
         Task RemoveAsync(Elder elder);
     } 
 }

@@ -26,42 +26,55 @@ namespace ElderCareApp.Controllers
 
 
 
-       public IActionResult Login()
-{
-    return View(new LoginDto());
-}
+      [HttpGet]
+        public IActionResult Login()
+        {
+            // If user is already logged in, send them to their dashboard
+            var role = HttpContext.Session.GetString("Role");
+            if (role == "Manager") return RedirectToAction("Dashboard", "Manager");
+            if (role == "Staff") return RedirectToAction("Index", "Staff");
 
-[HttpPost]
-public async Task<IActionResult> Login(LoginDto dto)
-{
-    if (!ModelState.IsValid)
-        return View(dto);
+            return View();
+        }
 
-    // Try Manager login
-    var manager = await _authService.ManagerLoginAsync(dto.Email, dto.Password);
-    if (manager != null)
-    {
-        HttpContext.Session.SetString("Role", "Manager");
-        HttpContext.Session.SetInt32("CareHomeId", manager.Id);
-        HttpContext.Session.SetString("ManagerName", manager.ManagerName);
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginDto dto)
+        {
+            if (!ModelState.IsValid) return View(dto);
 
-        return RedirectToAction("Dashboard", "Manager");
-    }
+            // 1. Call the unified LoginAsync that checks both tables
+            var sessionUser = await _authService.LoginAsync(dto.Email, dto.Password);
 
-    // Try Staff login
-    var staff = await _authService.StaffLoginAsync(dto.Email, dto.Password);
-    if (staff != null)
-    {
-        HttpContext.Session.SetString("Role", "Staff");
-        HttpContext.Session.SetInt32("StaffId", staff.Id);
-        HttpContext.Session.SetInt32("CareHomeId", staff.CareHomeId);
+            if (sessionUser == null)
+            {
+                // 2. Add error if login fails
+                ModelState.AddModelError(string.Empty, "Invalid Email or Password.");
+                return View(dto);
+            }
 
-        return RedirectToAction("Dashboard", "Staff");
-    }
+            // 3. Set Session variables (This is what SecureController looks for)
+            HttpContext.Session.SetInt32("UserId", sessionUser.Id);
+            HttpContext.Session.SetString("Role", sessionUser.Role);
+            HttpContext.Session.SetInt32("CareHomeId", sessionUser.CareHomeId); 
 
-    ModelState.AddModelError("", "Invalid login credentials");
-    return View(dto);
-}
+            // 4. Redirect based on the Role returned by the Service
+            if (sessionUser.Role == "Manager")
+            {
+                return RedirectToAction("Dashboard", "Manager");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Staff");
+            }
+        }
+
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login");
+        }
+    
 
     }
 }

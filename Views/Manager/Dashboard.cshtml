@@ -25,16 +25,31 @@
                 <td>@elder.FullName</td>
                 <td>@elder.Age</td>
                 <td>
-                    <a asp-controller="Staff" asp-action="AddHealth" asp-route-elderId="@elder.Id"
-                       class="btn btn-success">Add Health</a>
-                    <a asp-action="RemoveElder" asp-route-id="@elder.Id" class="btn btn-danger">Remove</a>
-                </td>
-                <td>
-                    <a asp-controller="Manager"       asp-action="ViewHealth" asp-route-elderId="@elder.Id"
+                    <a asp-controller="Manager" asp-action="ViewHealth" asp-route-elderId="@elder.Id"
                            class="btn btn-info btn-sm">
                         View Health
                     </a>
 
+                </td>
+                <td>
+                    @if (elder.Status == "Critical")
+                    {
+                        <span class="badge bg-danger">Critical - Action Required</span>
+                    }
+                    else if (elder.Status == "Monitor")
+                    {
+                        <span class="badge bg-warning text-dark">Monitor Closely</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">Stable</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="ElderDetails" asp-route-id="@elder.Id" class="btn btn-info btn-sm text-white">
+                        View Trends
+                    </a>
+                    
                 </td>
             </tr>
         }

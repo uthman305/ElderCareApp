@@ -18,6 +18,7 @@ builder.Services.AddScoped<IHealthRepository, HealthRepository>();
 
 builder.Services.AddScoped<IStaffService, StaffService>();
 builder.Services.AddScoped<IHealthService, HealthService>();
+builder.Services.AddScoped<IPdfService, PdfService>();
 
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddDistributedMemoryCache();
@@ -28,7 +29,9 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-
+builder.Services.AddSession(options => {
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Give yourself more time!
+});
 
 var app = builder.Build();
 

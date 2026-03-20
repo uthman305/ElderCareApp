@@ -1,32 +1,47 @@
-@using ElderCareApp.Models.ViewModels
-@model EnrollElderViewModel
+@model ElderCareApp.Dto.EnrollElderDto
 
-<h2>Enroll Elder</h2>
+<div class="container mt-4">
+    <h2>Enroll Elder</h2>
 
-<form asp-action="Enroll" method="post">
+    <form asp-action="Enroll" method="post">
 
-    <div class="form-group">
-        <label>Select Care Home</label>
-        <select asp-for="Elder.CareHomeId" asp-items="Model.CareHomes" class="form-control">
-            <option value="">-- Select Care Home --</option>
-        </select>
-        <span asp-validation-for="Elder.CareHomeId" class="text-danger"></span>
-    </div>
+        <div class="form-group mb-3">
+            <label class="form-label font-weight-bold">Target Care Home</label>
 
-    <div class="form-group mt-2">
-        <label>Full Name</label>
-        <input asp-for="Elder.FullName" class="form-control" />
-        <span asp-validation-for="Elder.FullName" class="text-danger"></span>
-    </div>
+            @if (ViewBag.IsUserLoggedIn == true)
+            {
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-house-lock"></i></span>
+                    <input type="text" class="form-control bg-light" value="@ViewBag.CurrentCareHomeName" readonly />
+                </div>
+                <input type="hidden" asp-for="CareHomeId" />
+                <small class="text-success">Automatically enrolling to your facility.</small>
+            }
+            else
+            {
+                <select asp-for="CareHomeId" class="form-select" asp-items="ViewBag.CareHomeList">
+                    <option value="">-- Select a Care Home --</option>
+                </select>
+                <span asp-validation-for="CareHomeId" class="text-danger"></span>
+                <small class="text-muted">Please select the facility where the elder will reside.</small>
+            }
+        </div>
 
-    <div class="form-group mt-2">
-        <label>Age</label>
-        <input asp-for="Elder.Age" type="number" class="form-control" />
-        <span asp-validation-for="Elder.Age" class="text-danger"></span>
-    </div>
+        <div class="form-group mt-2">
+            <label>Full Name</label>
+            <input asp-for="FullName" class="form-control" />
+            <span asp-validation-for="FullName" class="text-danger"></span>
+        </div>
 
-    <button class="btn btn-success mt-3">
-        Enroll Elder
-    </button>
+        <div class="form-group mt-2">
+            <label>Age</label>
+            <input asp-for="Age" type="number" class="form-control" />
+            <span asp-validation-for="Age" class="text-danger"></span>
+        </div>
 
-</form>
+        <button type="submit" class="btn btn-success mt-3">
+            Enroll Elder
+        </button>
+
+    </form>
+</div>

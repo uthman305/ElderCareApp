@@ -39,24 +39,27 @@ namespace ElderCareApp.Implementations.Services
     await _elderRepository.AddAsync(elder);
 }
 
-    public async Task<IEnumerable<Elder>> GetEldersByCareHomeAsync(int careHomeId)
+        public async Task<IEnumerable<Elder>> GetByIdAsync(int id)
+        {
+         return await _elderRepository.GetByIdAsync(id);
+        }
+
+        public async Task<IEnumerable<Elder>> GetEldersByCareHomeAsync(int careHomeId)
     {
         return await _elderRepository.GetByCareHomeIdAsync(careHomeId);
     }
-    public async Task<IEnumerable<Elder>> GetByCareHomeIdAsync(int careHomeId)
-    {
-        return await _elderRepository.GetByCareHomeIdAsync(careHomeId);
-    }
+    
 
   
     public async Task RemoveAsync(int elderId)
+{
+    var elderList = await _elderRepository.GetByIdAsync(elderId);
+    var elder = elderList?.FirstOrDefault();
+    if (elder != null)
     {
-        var elder = await _elderRepository.GetByIdAsync(elderId);
-        if (elder != null)
-        {
-            await _elderRepository.RemoveAsync(elder);
-        }
+        await _elderRepository.RemoveAsync(elder);
     }
+}
 }
 
 }

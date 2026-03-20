@@ -24,11 +24,7 @@ namespace ElderCareApp.Implementations.Repositories
                 .Where(e => e.CareHomeId == careHomeId)
                 .ToListAsync();
         }
-        public async Task<Elder?> GetByIdAsync(int id)
-    {
-        return await _context.Elders
-            .FirstOrDefaultAsync(e => e.Id == id);
-    }
+       
 
         public async Task AddAsync(Elder elder)
         {
@@ -42,6 +38,14 @@ namespace ElderCareApp.Implementations.Repositories
             _context.Elders.Remove(elder);
             await _context.SaveChangesAsync();
         }
+
+       public async Task<IEnumerable<Elder>> GetByIdAsync(int id)
+{
+   
+    return await _context.Elders
+                .Where(e => e.Id == id)
+                .ToListAsync();
+}
     }
 
 }

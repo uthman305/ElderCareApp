@@ -1,36 +1,77 @@
 @model IEnumerable<ElderCareApp.Models.ElderHealthRecord>
 
-<h2>Health Records</h2>
-
-@if (!Model.Any())
-{
-    <div class="alert alert-info">
-        No health records available for this elder.
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Health Trends</h2>
+        @if (Model != null && Model.Any())
+        {
+            <a asp-action="DownloadReport" asp-route-elderId="@Model.First().ElderId" class="btn btn-danger">
+                <i class="bi bi-file-earpdf"></i> Download PDF Report
+            </a>
+        }
     </div>
-}
-else
-{
-    <table class="table table-bordered table-striped">
+    <hr />
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <canvas id="healthChart" style="width:100%; max-height:400px;"></canvas>
+        </div>
+    </div>
+
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>Date</th>
-                <th>Blood Pressure</th>
                 <th>Heart Rate</th>
+                <th>Blood Pressure</th>
                 <th>Notes</th>
-                <th>Recorded By</th>
             </tr>
         </thead>
         <tbody>
-        @foreach (var record in Model)
-        {
-            <tr>
-                <td>@record.DateRecorded.ToString("dd MMM yyyy")</td>
-                <td>@record.BloodPressure</td>
-                <td>@record.HeartRate</td>
-                <td>@record.Notes</td>
-                <td>@record.Staff?.FullName</td>
-            </tr>
-        }
+            @foreach (var record in Model)
+            {
+                <tr>
+                    <td>@record.DateRecorded.ToString("MMM dd, HH:mm")</td>
+                    <td>@record.HeartRate bpm</td>
+                    <td>@record.BloodPressure</td>
+                    <td>@record.Notes</td>
+                </tr>
+            }
         </tbody>
     </table>
-}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const ctx = document.getElementById('healthChart').getContext('2d');
+
+    // Convert C# Model data to JavaScript Arrays
+    const labels = @Html.Raw(Json.Serialize(Model.Select(r => r.DateRecorded.ToString("MM/dd HH:mm"))));
+    const heartRates = @Html.Raw(Json.Serialize(Model.Select(r => r.HeartRate)));
+
+    new Chart(ctx, {
+    type: 'line',
+    data: {
+    labels: labels,
+    datasets: [{
+    label: 'Heart Rate (BPM)',
+    data: heartRates,
+    borderColor: 'rgba(255, 99, 132, 1)',
+    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+    borderWidth: 3,
+    tension: 0.3, // Makes the line curvy
+    fill: true
+    }]
+    },
+    options: {
+    responsive: true,
+    plugins: {
+    legend: { position: 'top' }
+    },
+    scales: {
+    y: { beginAtZero: false, title: { display: true, text: 'Beats Per Minute' } }
+    }
+    }
+    });
+</script>

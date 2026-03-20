@@ -1,0 +1,46 @@
+@model IEnumerable<ElderCareApp.Models.ElderHealthRecord>
+
+@{
+    ViewData["Title"] = "Health Trends";
+    // Prepare data for Javascript
+    var labels = Model.Select(r => r.DateRecorded.ToString("MM/dd HH:mm")).ToList();
+    var heartRates = Model.Select(r => r.HeartRate).ToList();
+}
+
+<div class="container mt-4">
+    <h2>Health Trends</h2>
+    <hr />
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title">Heart Rate History</h5>
+            <canvas id="healthChart" width="400" height="150"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const ctx = document.getElementById('healthChart').getContext('2d');
+    const healthChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: @Html.Raw(Json.Serialize(labels)),
+            datasets: [{
+                label: 'Heart Rate (BPM)',
+                data: @Html.Raw(Json.Serialize(heartRates)),
+                borderColor: 'rgb(255, 99, 132)',
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderWidth: 2,
+                tension: 0.3, // Makes the line wavy/smooth
+                fill: true
+            }]
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: false, min: 40, max: 150 }
+            }
+        }
+    });
+</script>

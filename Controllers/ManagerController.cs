@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 namespace ElderCareApp.Controllers
 {
     
-    public class ManagerController : Controller
+    public class ManagerController : SecureController
     {
         private readonly IElderService _elderService;
          private readonly IStaffService _staffService;
@@ -24,47 +24,72 @@ namespace ElderCareApp.Controllers
         _healthService = healthService;
 
     }
-
-    public async Task<IActionResult> Dashboard()
+[HttpGet]
+public async Task<IActionResult> Dashboard()
+{
+    // 1. Check if UserId actually has a value before using .Value
+    if (!UserId.HasValue)
     {
-        var careHomeId = HttpContext.Session.GetInt32("CareHomeId");
-        if (careHomeId == null)
-            return RedirectToAction("Login", "Account");
-
-        var elders = await _elderService.GetByCareHomeIdAsync(careHomeId.Value);
-        return View(elders);
+        // If it's null, the session expired or login failed. Send them back.
+        return RedirectToAction("Login", "Account");
     }
 
+    var careHomeId = UserId.Value; 
+    var elders = await _elderService.GetEldersByCareHomeAsync(careHomeId);
+    return View(elders);
+}
+[HttpPost]
     public async Task<IActionResult> RemoveElder(int id)
     {
         await _elderService.RemoveAsync(id);
         return RedirectToAction(nameof(Dashboard));
     }
-
+[HttpGet]
       public IActionResult CreateStaff()
     {
         return View();
     }
 
-    [HttpPost]
-    public async Task<IActionResult> CreateStaff(CreateStaffDto dto)
+   [HttpPost]
+public async Task<IActionResult> CreateStaff(CreateStaffDto dto)
+{
+    // 1. Get the ID from our SecureController helper
+    var careHomeId = UserId; 
+
+    // 2. SAFETY CHECK: If the session is gone, we can't save the staff
+    if (!careHomeId.HasValue)
     {
-        var careHomeId = HttpContext.Session.GetInt32("CareHomeId");
-
-        await _staffService.CreateStaffAsync(dto, careHomeId.Value);
-
-        return RedirectToAction("Dashboard");
+        // Log them out or send to login because we don't know which CareHome they belong to
+        return RedirectToAction("Login", "Account");
     }
+
+    if (!ModelState.IsValid) 
+    {
+        return View(dto);
+    }
+
+    // 3. Use the value safely
+    await _staffService.CreateStaffAsync(dto, careHomeId.Value);
+    
+    return RedirectToAction(nameof(Dashboard));
+}
+    [HttpGet]
     public async Task<IActionResult> ViewHealth(int elderId)
 {
-    if (HttpContext.Session.GetString("Role") != "Manager")
-        return RedirectToAction("Login", "Account");
 
     var records = await _healthService.GetHealthByElderAsync(elderId);
     ViewBag.ElderId = elderId;
 
     return View(records);
 }
-
+[HttpGet]
+public async Task<IActionResult> ElderDetails(int id)
+{
+    var healthRecords = await _healthService.GetHealthByElderAsync(id);
+    // Sort records by date so the chart flows correctly
+    var sortedRecords = healthRecords.OrderBy(r => r.DateRecorded).ToList();
+    
+    return View(sortedRecords);
+}
 }
 }

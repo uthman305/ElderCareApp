@@ -11,7 +11,7 @@ namespace ElderCareApp.Interfaces.Services
     {
         Task EnrollElderAsync(EnrollElderDto dto);
         Task<IEnumerable<Elder>> GetEldersByCareHomeAsync(int careHomeId);
-        Task<IEnumerable<Elder>> GetByCareHomeIdAsync(int careHomeId);
+        Task<IEnumerable<Elder>> GetByIdAsync(int id);
         Task RemoveAsync(int elderId);
     }
 }
